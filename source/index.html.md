@@ -9,6 +9,9 @@ toc_footers:
 
 includes:
   - users
+  - courses
+  - holes
+  - scores
   - errors
 
 search: true
