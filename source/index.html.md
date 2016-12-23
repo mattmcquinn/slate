@@ -3,12 +3,8 @@ title: API Reference
 
 language_tabs:
   - shell
-  - ruby
-  - python
-  - javascript
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
   - <a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a>
 
 includes:
@@ -19,171 +15,182 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the DG-Scorecard API! You can use our API to store rounds of disc
+golf!
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+All requests require the Content-Type to be application/vnd.api+json
 
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+> To specify the Content-Type, use this code:
+
+```shell
+curl "api_endpoint_here"
+     -H "Content-Type: application/vnd.api+json"
+```
 
 # Authentication
 
 > To authorize, use this code:
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
 ```shell
 # With shell, you can just pass the correct header with each request
 curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+  -H "Authorization: Bearer token"
 ```
 
-```javascript
-const kittn = require('kittn');
+> Make sure to replace `token` with your [JSON Web Token (JWT)](https://jwt.io).
 
-let api = kittn.authorize('meowmeowmeow');
-```
+DG-Scorecard expects the JWT to be included in most API requests to the
+server in a header that looks like the following:
 
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
+`Authorization: Bearer token`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>token</code> with your personal JWT.
 </aside>
 
-# Kittens
+## Get your JWT
 
-## Get All Kittens
+This endpoint responds with your JWT
 
-```ruby
-require 'kittn'
+### HTTP Request
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
+`POST http://localhost:3000/user_token`
 
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+> To receive your JWT, use this code:
 
 ```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+curl -X POST -H "Content-Type: application/vnd.api+json"
+             -d '{"auth":{"email":"example@email.com","password":"password"}}'
+                 "http://localhost:3000/user_token"
 ```
 
-```javascript
-const kittn = require('kittn');
+# Users
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+## Get All Users
+
+```shell
+curl -X GET -H "Authorization: Bearer token" -H
+"Content-Type: application/vnd.api+json" "http://localhost:3000/users/"
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 [
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
+ {
+  "data": [
+    {
+      "id": "1",
+      "type": "users",
+      "links": {
+        "self": "http://localhost:3000/users/1"
+      },
+      "attributes": {
+        "name": "Keegan Aufderhar",
+        "email": "americo_goodwin@mcdermottsatterfield.org"
+      },
+      "relationships": {
+        "rounds": {
+          "links": {
+            "self": "http://localhost:3000/users/1/relationships/rounds",
+            "related": "http://localhost:3000/users/1/rounds"
+          }
+        },
+        "scores": {
+          "links": {
+            "self": "http://localhost:3000/users/1/relationships/scores",
+            "related": "http://localhost:3000/users/1/scores"
+          }
+        }
+      }
+    },
+    {
+      "id": "2",
+      "type": "users",
+      "links": {
+        "self": "http://localhost:3000/users/2"
+      },
+      "attributes": {
+        "name": "Matthew McQuinn",
+        "email": "mmcquinn77@gmail.com"
+      },
+      "relationships": {
+        "rounds": {
+          "links": {
+            "self": "http://localhost:3000/users/2/relationships/rounds",
+            "related": "http://localhost:3000/users/2/rounds"
+          }
+        },
+        "scores": {
+          "links": {
+            "self": "http://localhost:3000/users/2/relationships/scores",
+            "related": "http://localhost:3000/users/2/scores"
+          }
+        }
+      }
+    }
+  ]
+}
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint retrieves all users.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET http://localhost:3000/users`
 
 ### Query Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
+## Get a Specific User
 
 ```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+curl -X GET -H "Authorization: Bearer token"
+-H "Content-Type: application/vnd.api+json" "http://localhost:3000/users/1"
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "data": {
+    "id": "1",
+    "type": "users",
+    "links": {
+      "self": "http://localhost:3000/users/1"
+    },
+    "attributes": {
+      "name": "Keegan Aufderhar",
+      "email": "americo_goodwin@mcdermottsatterfield.org"
+    },
+    "relationships": {
+      "rounds": {
+        "links": {
+          "self": "http://localhost:3000/users/1/relationships/rounds",
+          "related": "http://localhost:3000/users/1/rounds"
+        }
+      },
+      "scores": {
+        "links": {
+          "self": "http://localhost:3000/users/1/relationships/scores",
+          "related": "http://localhost:3000/users/1/scores"
+        }
+      }
+    }
+  }
 }
 ```
 
-This endpoint retrieves a specific kitten.
+This endpoint retrieves a specific user.
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET http://example.com/users/<ID>`
 
 ### URL Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to retrieve
+ID | The ID of the user to retrieve
 
