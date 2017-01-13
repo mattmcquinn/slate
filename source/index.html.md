@@ -11,6 +11,7 @@ includes:
   - users
   - courses
   - holes
+  - rounds
   - scores
   - errors
 
@@ -21,6 +22,10 @@ search: true
 
 Welcome to the DG-Scorecard API! You can use our API to store rounds of disc
 golf!
+
+This API follows the <a href='http://jsonapi.org/'>JSON API specification</a>
+
+For more examples on how to interact with this API, check <a href='http://jsonapi.org/examples/'>here</a>
 
 All requests require the Content-Type to be application/vnd.api+json
 
