@@ -20,8 +20,7 @@ search: true
 
 # Introduction
 
-Welcome to the DG-Scorecard API! You can use our API to store rounds of disc
-golf!
+Welcome to the DG-Scorecard API! You can use our API to store rounds of disc golf!
 
 This API follows the <a href='http://jsonapi.org/'>JSON API specification</a>
 
